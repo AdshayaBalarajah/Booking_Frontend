@@ -1,11 +1,22 @@
 import React from "react";
-import LandingPage from "./pages/LandingPage"; // If you have a separate landing page component
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LandingPage from "./screens/LandingPage";
+import AppointmentBooking from "./screens/AppointmentPage";
+import AdminDashboard from "./screens/AdminDashboard";
+import Login from "./screens/LoginPage";
+import Signup from "./screens/SignUpPage";
 
 const App = () => {
   return (
-    <div>
-      <LandingPage />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/appointments" element={<AppointmentBooking />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+      </Routes>
+    </Router>
   );
 };
 
