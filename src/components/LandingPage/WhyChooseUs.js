@@ -10,8 +10,9 @@ import {
   ListItemText,
   Button,
 } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Icon for key points
-import consultingImage from "../../assets/why.jpg"; // Replace with your actual image path
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"; 
+import consultingImage from "../../assets/why.jpg";
+import { useNavigate } from "react-router-dom"; 
 
 const points = [
   "Expert team with 10+ years of industry experience.",
@@ -22,11 +23,18 @@ const points = [
 ];
 
 const WhyChooseUs = () => {
+  const navigate = useNavigate(); 
+
+  // Function to handle button click
+  const handleBookAppointment = () => {
+    navigate("/appointments"); // Navigate to AppointmentPage
+  };
+
   return (
     <Box sx={{ py: 10, backgroundColor: "background.default" }}>
       <Container>
         <Grid container spacing={4} alignItems="center">
-          {/* Left Side - Text Content */}
+         
           <Grid item xs={12} md={6}>
             <Typography
               variant="h4"
@@ -40,7 +48,7 @@ const WhyChooseUs = () => {
               competitive digital world.
             </Typography>
 
-            {/* Key Points List */}
+         
             <List>
               {points.map((point, index) => (
                 <ListItem key={index}>
@@ -55,7 +63,7 @@ const WhyChooseUs = () => {
               ))}
             </List>
 
-            {/* Book Appointment Button */}
+            
             <Button
               variant="contained"
               color="primary"
@@ -66,13 +74,13 @@ const WhyChooseUs = () => {
                 fontSize: "16px",
                 fontWeight: "bold",
               }}
-              onClick={() => console.log("Redirect to booking page")}
+              onClick={handleBookAppointment} 
             >
               Book an Appointment
             </Button>
           </Grid>
 
-          {/* Right Side - Image */}
+          
           <Grid item xs={12} md={6}>
             <Box
               component="img"

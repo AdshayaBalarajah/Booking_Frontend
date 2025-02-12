@@ -8,9 +8,16 @@ import ServicesSection from "../components/LandingPage/ServicesSection";
 import Testimonials from "../components/LandingPage/Testimonials";
 import Footer from "../components/Utils/Footer";
 import WhyChooseUs from "../components/LandingPage/WhyChooseUs";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
-  const theme = useTheme(); // Access the theme
+  const theme = useTheme();
+  const navigate = useNavigate(); 
+
+  // Function to handle button click
+  const handleBookAppointment = () => {
+    navigate("/appointments"); // Navigate to AppointmentPage
+  };
 
   return (
     <>
@@ -28,17 +35,17 @@ const LandingPage = () => {
         }}
       >
         <Navbar />
-        {/* Text Content */}
+        
         <Box
           sx={{ textAlign: "center", position: "relative", zIndex: 1, mt: 5 }}
         >
           <Typography
             variant="h1"
             sx={{
-              fontFamily: "Poppins, sans-serif", // Using Poppins font from theme
-              fontWeight: 700, // Bold weight for the heading
-              color: theme.palette.text.primary, // Color from theme
-              marginBottom: 2, // Space below the heading
+              fontFamily: "Poppins, sans-serif",
+              fontWeight: 700,
+              color: theme.palette.text.primary, 
+              marginBottom: 2,
             }}
           >
             Innovate, Secure, and Scale with <br />
@@ -47,13 +54,13 @@ const LandingPage = () => {
           <Typography
             variant="h6"
             sx={{
-              fontFamily: "Poppins, sans-serif", // Matching font for subheading
-              fontWeight: 300, // Light weight for the subheading
-              color: theme.palette.text.secondary, // Color from theme
+              fontFamily: "Poppins, sans-serif",
+              fontWeight: 300, 
+              color: theme.palette.text.secondary,
               opacity: 0.8,
               marginTop: 1,
               maxWidth: 800,
-              margin: "0 auto", // Center the text
+              margin: "0 auto",
             }}
           >
             From software development to cloud transformation and cybersecurity,
@@ -62,8 +69,12 @@ const LandingPage = () => {
 
           {/* Buttons */}
           <Box sx={{ mt: 4 }}>
-            <CustomButton variant="contained" color="primary">
-              Get an Appointment
+            <CustomButton
+              variant="contained"
+              color="primary"
+              onClick={handleBookAppointment}
+            >
+              Book an Appointment
             </CustomButton>
             <CustomButton variant="outlined" sx={{ ml: 2 }}>
               Learn More
