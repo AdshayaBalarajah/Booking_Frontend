@@ -1,9 +1,17 @@
 import { useState } from "react";
-import { Grid, Box, Typography, TextField, Button, Link, InputAdornment, IconButton } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Link,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LoginImg from "../assets/login.jpg";
 import { useNavigate } from "react-router-dom";
-// import axios from "axios";
 import { login } from "../api/auth";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../store/authSlice";
@@ -40,9 +48,16 @@ const Login = () => {
       });
 
       if (response.status === 200) {
-        dispatch(loginSuccess(response.data));
-        alert("Login successful! ✅");
-        navigate("/appointments");
+        const userData = response.data;
+
+        // Check if the user is an admin based on the role
+        if (userData.role === "ADMIN") {
+          alert("Admin access denied! ❌");
+        } else {
+          dispatch(loginSuccess(userData));
+          alert("Login successful! ✅");
+          navigate("/");
+        }
       }
     } catch (error) {
       alert("Login failed ❌");
@@ -52,17 +67,38 @@ const Login = () => {
 
   return (
     <Grid container sx={{ height: "100vh", mb: "-25px" }}>
-      <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column", justifyContent: "center", p: 4, pl: 20 }}>
+      <Grid
+        item
+        xs={12}
+        md={6}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          p: 4,
+          pl: 20,
+        }}
+      >
         <Typography
           variant="h4"
           fontWeight="bold"
           color="primary"
-          sx={{ mb: 4, position: "absolute", top: 30, left: "150px", cursor: "pointer" }}
+          sx={{
+            mb: 4,
+            position: "absolute",
+            top: 30,
+            left: "150px",
+            cursor: "pointer",
+          }}
           onClick={() => navigate("/")}
         >
           ConsultPro
         </Typography>
-        <Box sx={{ width: "100%", maxWidth: 400 }} component="form" onSubmit={handleSubmit}>
+        <Box
+          sx={{ width: "100%", maxWidth: 400 }}
+          component="form"
+          onSubmit={handleSubmit}
+        >
           <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
             Login
           </Typography>
@@ -109,10 +145,20 @@ const Login = () => {
               Forgot Password?
             </Link>
           </Box>
-          <Button fullWidth variant="contained" color="primary" size="large" type="submit" disabled={loading}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            size="large"
+            type="submit"
+            disabled={loading}
+          >
             {loading ? "Logging in..." : "Login"}
           </Button>
-          <Typography variant="body2" sx={{ textAlign: "center", mt: 2, color: "gray" }}>
+          <Typography
+            variant="body2"
+            sx={{ textAlign: "center", mt: 2, color: "gray" }}
+          >
             By continuing, you agree to our Terms of Service and Privacy Policy.
           </Typography>
         </Box>

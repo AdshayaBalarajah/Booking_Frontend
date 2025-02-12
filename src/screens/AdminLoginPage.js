@@ -6,56 +6,62 @@ import {
   TextField,
   Button,
   Link,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
-import axios from "axios";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { login } from "../api/auth";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../store/authSlice";
 
 const AdminLoginPage = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // To store error message
-  const [validationErrors, setValidationErrors] = useState({}); // To store validation errors
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-    // Validate form inputs
-    if (!username.trim()) {
-      setValidationErrors((prevErrors) => ({
-        ...prevErrors,
-        username: "Username is required",
-      }));
-      return;
-    }
+  const validate = () => {
+    let tempErrors = {};
+    if (!formData.email.trim()) tempErrors.email = "Email is required";
+    if (!formData.password.trim()) tempErrors.password = "Password is required";
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
 
-    if (!password.trim()) {
-      setValidationErrors((prevErrors) => ({
-        ...prevErrors,
-        password: "Password is required",
-      }));
-      return;
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
 
-    // Clear previous validation errors
-    setValidationErrors({});
-
+    setLoading(true);
     try {
-      // Make the API call to the backend for login
-      const response = await axios.post("http://your-api-endpoint/login", {
-        username,
-        password,
+      const response = await login({
+        email: formData.email,
+        password: formData.password,
       });
 
-      // If login is successful, redirect to admin dashboard or another page
       if (response.status === 200) {
-        console.log("Login Successful");
-        // Redirect to another page, e.g., admin dashboard
-        // For example: window.location.href = "/admin";
+        const userData = response.data;
+
+        // Check if the logged-in user is an admin, considering case sensitivity
+        if (userData.role.toUpperCase() === "ADMIN") {
+          dispatch(loginSuccess(userData));
+          alert("Login successful! ✅");
+          navigate("/admin");
+        } else {
+          alert("Admin access denied! ❌");
+        }
       }
     } catch (error) {
-      // Handle error if login fails
-      setError("Invalid username or password");
-      console.error("Login failed:", error);
+      alert("Invalid username or password ❌");
     }
+    setLoading(false);
   };
 
   return (
@@ -66,7 +72,7 @@ const AdminLoginPage = () => {
         alignItems: "center",
         minHeight: "100vh",
         backgroundColor: "#ECECEC",
-        padding: 2, // Added padding for better spacing around the content
+        padding: 2,
       }}
     >
       <Container maxWidth="xs">
@@ -77,73 +83,52 @@ const AdminLoginPage = () => {
             alignItems: "center",
             padding: 3,
             borderRadius: 2,
-            boxShadow: 6, // Stronger shadow for emphasis
+            boxShadow: 6,
             backgroundColor: "white",
-            transition: "all 0.3s ease-in-out", // Smooth transition on hover
             "&:hover": {
-              boxShadow: 12, // Darker shadow on hover
+              boxShadow: 12,
             },
           }}
         >
           <Typography
             variant="h4"
-            sx={{
-              mb: 2,
-              fontWeight: 700, // Bold title for more emphasis
-              color: "primary.main", // Color from theme
-            }}
+            sx={{ mb: 2, fontWeight: 700, color: "primary.main" }}
           >
             Admin Login
           </Typography>
 
-          {/* Display error message if login fails */}
-          {error && (
-            <Typography
-              variant="body1"
-              sx={{
-                color: "error.main",
-                mb: 2,
-                textAlign: "center", // Centered error message
-                fontWeight: 500,
-              }}
-            >
-              {error}
-            </Typography>
-          )}
-
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <TextField
-              label="Username"
+              label="Email Address"
               variant="outlined"
               fullWidth
-              sx={{
-                mb: 2,
-                "& .MuiInputBase-root": {
-                  borderRadius: 2, // Rounded corners for the text field
-                },
-              }}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              error={!!validationErrors.username}
-              helperText={validationErrors.username}
+              sx={{ mb: 2 }}
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              error={!!errors.email}
+              helperText={errors.email}
             />
             <TextField
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               variant="outlined"
               fullWidth
-              sx={{
-                mb: 2,
-                "& .MuiInputBase-root": {
-                  borderRadius: 2, // Rounded corners for the text field
-                },
+              sx={{ mb: 2 }}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              error={!!errors.password}
+              helperText={errors.password}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              error={!!validationErrors.password}
-              helperText={validationErrors.password}
             />
             <Button
               variant="contained"
@@ -152,34 +137,20 @@ const AdminLoginPage = () => {
               type="submit"
               sx={{
                 mt: 2,
-                padding: "12px 20px", // Custom padding for the button
-                fontSize: "16px", // Font size for the button text
-                fontWeight: 600, // Bold text for the button
-                "&:hover": {
-                  backgroundColor: "primary.dark", // Darker color on hover
-                },
+                padding: "12px 20px",
+                fontSize: "16px",
+                fontWeight: 600,
               }}
+              disabled={loading}
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
 
-          {/* Forgot Password and Sign Up Links */}
-          <Box sx={{ mt: 2, width: "100%", textAlign: "center" }}>
-            <Link
-              href="/forgot-password"
-              sx={{ mr: 2 }}
-              color="primary"
-              variant="body2"
-            >
+          <Box sx={{ mt: 2, textAlign: "center" }}>
+            <Link href="/forgot-password" color="primary">
               Forgot Password?
             </Link>
-            <Typography variant="body2" sx={{ display: "inline" }}>
-              Don't have an account?{" "}
-              <Link href="/signup" color="primary" variant="body2">
-                Sign Up
-              </Link>
-            </Typography>
           </Box>
         </Box>
       </Container>

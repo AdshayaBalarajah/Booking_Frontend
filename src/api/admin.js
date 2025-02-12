@@ -46,3 +46,4 @@ export const testAuth = async () => {
   const response = await api.get("/test");
   return response.data;
 };
+
