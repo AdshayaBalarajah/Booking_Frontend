@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  MenuItem,
-  Typography,
-} from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, MenuItem, Typography } from "@mui/material";
+import { bookAppointment } from "../../api/appointment"; // Import the bookAppointment function from your API file
 
-const AppointmentModal = ({
-  open,
-  handleClose,
-  selectedDate,
-  selectedSlot,
-  onConfirm,
-}) => {
+const AppointmentModal = ({ open, handleClose, selectedDate, selectedSlot, onConfirm }) => {
   const [consultancyType, setConsultancyType] = useState("");
   const [timeSlot, setTimeSlot] = useState(selectedSlot);
   const [mode, setMode] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false); // For handling loading state
+  const [error, setError] = useState(""); // For handling error state
 
   const timeSlots = [
     "09:00 AM - 10:00 AM",
@@ -37,34 +25,32 @@ const AppointmentModal = ({
     setTimeSlot(selectedSlot);
   }, [selectedSlot]);
 
-  const handleSubmit = () => {
-    if (!fullName || !email || !phone) {
+  const handleSubmit = async () => {
+    if (!fullName || !email || !phone || !consultancyType || !mode) {
       alert("Please fill in all required fields.");
       return;
     }
 
-    onConfirm({
-      consultancyType,
+    setLoading(true);
+    setError(""); // Reset previous errors
+
+    const bookingRequest = {
+      consultantName: consultancyType,
       date: selectedDate.format("YYYY-MM-DD"),
-      time: timeSlot,
+      timeSlot: timeSlot,
       mode,
       fullName,
       email,
-      phone,
-    });
+      userNotes:phone,
+    };
+    onConfirm(bookingRequest);
 
-    handleClose(); // Close modal after submission
+    setLoading(false);
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      PaperProps={{ sx: { backgroundColor: "white", color: "black" } }}
-    >
-      <DialogTitle sx={{ color: "black", fontWeight: "bold" }}>
-        Book Appointment
-      </DialogTitle>
+    <Dialog open={open} onClose={handleClose} PaperProps={{ sx: { backgroundColor: "white", color: "black" } }}>
+      <DialogTitle sx={{ color: "black", fontWeight: "bold" }}>Book Appointment</DialogTitle>
       <DialogContent>
         <Typography variant="subtitle1" sx={{ color: "black" }}>
           Selected Date: {selectedDate.format("YYYY-MM-DD")}
@@ -90,20 +76,14 @@ const AppointmentModal = ({
 
         {/* Time Slot */}
         <TextField
-          select
+          disabled
           fullWidth
           margin="dense"
           label="Select Time Slot"
-          InputProps={{ sx: { color: "black" } }}
           value={timeSlot || ""}
-          onChange={(e) => setTimeSlot(e.target.value)}
+          InputProps={{ sx: { color: "black" } }}
           sx={{ color: "black" }}
         >
-          {timeSlots.map((slot, index) => (
-            <MenuItem key={index} value={slot}>
-              {slot}
-            </MenuItem>
-          ))}
         </TextField>
 
         {/* Mode of Consultancy */}
@@ -128,8 +108,8 @@ const AppointmentModal = ({
           label="Full Name"
           required
           value={fullName}
-          InputProps={{ sx: { color: "black" } }}
           onChange={(e) => setFullName(e.target.value)}
+          InputProps={{ sx: { color: "black" } }}
           sx={{ color: "black" }}
         />
         <TextField
@@ -139,8 +119,8 @@ const AppointmentModal = ({
           required
           type="email"
           value={email}
-          InputProps={{ sx: { color: "black" } }}
           onChange={(e) => setEmail(e.target.value)}
+          InputProps={{ sx: { color: "black" } }}
           sx={{ color: "black" }}
         />
         <TextField
@@ -150,18 +130,21 @@ const AppointmentModal = ({
           required
           type="tel"
           value={phone}
-          InputProps={{ sx: { color: "black" } }}
           onChange={(e) => setPhone(e.target.value)}
+          InputProps={{ sx: { color: "black" } }}
           sx={{ color: "black" }}
         />
+
+        {/* Display error message if any */}
+        {error && <Typography color="error">{error}</Typography>}
       </DialogContent>
 
       <DialogActions>
         <Button onClick={handleClose} color="secondary">
           Cancel
         </Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary">
-          Confirm
+        <Button onClick={handleSubmit} variant="contained" color="primary" disabled={loading}>
+          {loading ? "Booking..." : "Confirm"}
         </Button>
       </DialogActions>
     </Dialog>

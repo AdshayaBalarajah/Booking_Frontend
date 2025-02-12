@@ -1,55 +1,75 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Container,
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Button,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Container, Grid, Card, CardContent, Typography, List, ListItem, ListItemText, Button } from "@mui/material";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
-import ScheduleIcon from "@mui/icons-material/Schedule";
-import CancelIcon from "@mui/icons-material/Cancel";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AppointmentModal from "../components/AppointmentPage/AppointmentModal";
-import dayjs from "dayjs";
 import NavBarLight from "../components/Utils/NavBarLight";
 import Footer from "../components/Utils/Footer";
 import BookedAppointmentsTable from "../components/AppointmentPage/BookedAppointment";
+import { getAvailableSlots, bookAppointment, getUserAppointments, cancelAppointment } from "../api/appointment"; 
+
+import dayjs from "dayjs";
 
 const AppointmentBooking = () => {
   const [selectedDate, setSelectedDate] = useState(dayjs());
+  const [availableSlots, setAvailableSlots] = useState([]);
   const [bookedAppointments, setBookedAppointments] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState("");
+  const [token, setToken] = useState(localStorage.getItem("accessToken"));
 
-  const handleBookAppointment = (slot) => {
+  useEffect(() => {
+    const fetchAvailableSlots = async () => {
+      try {
+        const response = await getAvailableSlots(selectedDate.format("YYYY-MM-DD"));
+        setAvailableSlots(response);
+      } catch (error) {
+        console.error("Error fetching available slots", error);
+      }
+    };
+
+    fetchAvailableSlots();
+  }, [selectedDate]);
+
+  const fetchBookedAppointments = async () => {
+    try {
+      const response = await getUserAppointments();
+      console.log(response);
+      setBookedAppointments(response);
+    } catch (error) {
+      console.error("Error fetching booked appointments", error);
+    }
+  };
+  useEffect(() => {
+    if (token) {
+      fetchBookedAppointments();
+    }
+  }, [token]);
+
+  const handleBookAppointment = async (slot) => {
     setSelectedSlot(slot);
     setOpenModal(true);
   };
 
-  const handleConfirmBooking = (appointment) => {
-    setBookedAppointments([...bookedAppointments, appointment]);
+  const handleConfirmBooking = async (appointment) => {
+    try {
+      const response = await bookAppointment(appointment);
+      fetchBookedAppointments();
+      setOpenModal(false);
+    } catch (error) {
+      console.error("Error booking appointment", error);
+    }
   };
 
-  const [appointments, setAppointments] = useState([
-    { date: "2025-02-15", time: "10:00 AM", fullName: "John Doe" },
-    { date: "2025-02-16", time: "2:00 PM", fullName: "Jane Smith" },
-  ]);
-
-  const handleCancelAppointment = (appointment) => {
-    setAppointments(appointments.filter((a) => a !== appointment));
+  const handleCancelAppointment = async (appointment) => {
+    try {
+      const response = await cancelAppointment(appointment.id, token);
+      setBookedAppointments(bookedAppointments.filter((a) => a.id !== appointment.id));
+    } catch (error) {
+      console.error("Error cancelling appointment", error);
+    }
   };
 
   return (
@@ -64,13 +84,7 @@ const AppointmentBooking = () => {
       >
         <NavBarLight />
         <Container>
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            textAlign="center"
-            my={5}
-            color="black"
-          >
+          <Typography variant="h4" fontWeight="bold" textAlign="center" my={5} color="black">
             Appointments
           </Typography>
 
@@ -86,11 +100,7 @@ const AppointmentBooking = () => {
                 }}
               >
                 <CardContent>
-                  <Typography
-                    variant="h6"
-                    fontWeight="bold"
-                    sx={{ mb: 2, display: "flex", alignItems: "center" }}
-                  >
+                  <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, display: "flex", alignItems: "center" }}>
                     <EventAvailableIcon sx={{ mr: 1, color: "primary.main" }} />
                     Select Date
                   </Typography>
@@ -119,14 +129,7 @@ const AppointmentBooking = () => {
                     Available Slots:
                   </Typography>
                   <List>
-                    {[
-                      "09:00 AM - 10:00 AM",
-                      "10:30 AM - 11:30 AM",
-                      "12:00 PM - 1:00 PM",
-                      "02:00 PM - 3:00 PM",
-                      "03:30 PM - 4:30 PM",
-                      "05:00 PM - 6:00 PM",
-                    ].map((slot, index) => (
+                    {availableSlots?.map((slot, index) => (
                       <ListItem
                         key={index}
                         sx={{
@@ -145,11 +148,7 @@ const AppointmentBooking = () => {
 
             {/* Booked Appointments */}
             <Grid item xs={12} md={6}>
-              <BookedAppointmentsTable
-                bookedAppointments={appointments}
-                handleCancel={handleCancelAppointment}
-              />
-              ;{" "}
+              <BookedAppointmentsTable bookedAppointments={bookedAppointments} handleCancel={handleCancelAppointment} />
             </Grid>
           </Grid>
         </Container>

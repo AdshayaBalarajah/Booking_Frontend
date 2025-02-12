@@ -59,7 +59,7 @@ const BookedAppointmentsTable = ({ bookedAppointments, handleCancel }) => {
           Your Booked Appointments
         </Typography>
 
-        {bookedAppointments.length > 0 ? (
+        {bookedAppointments?.length > 0 ? (
           <Table sx={{ minWidth: 500 }}>
             <TableHead>
               <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
@@ -87,10 +87,10 @@ const BookedAppointmentsTable = ({ bookedAppointments, handleCancel }) => {
                     },
                   }}
                 >
-                  <TableCell sx={{ color: "black" }}>{booking.date}</TableCell>
-                  <TableCell sx={{ color: "black" }}>{booking.time}</TableCell>
+                  <TableCell sx={{ color: "black" }}>{booking.appointmentDateTime.split('T')[0]}</TableCell>
+                  <TableCell sx={{ color: "black" }}>{booking.appointmentDateTime.split('T')[1]}</TableCell>
                   <TableCell sx={{ color: "black" }}>
-                    {booking.fullName}
+                    {booking.consultantName}
                   </TableCell>
                   <TableCell>
                     <IconButton

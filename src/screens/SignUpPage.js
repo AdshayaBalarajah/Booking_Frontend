@@ -1,22 +1,65 @@
 import { useState } from "react";
-import {
-  Grid,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Link,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
+import { Grid, Box, Typography, TextField, Button, Link, InputAdornment, IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import SignupImg from "../assets/login.jpg"; // Change image accordingly
+import SignupImg from "../assets/login.jpg"; 
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; 
+import { register } from "../api/auth";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../store/authSlice";
 
 const Signup = () => {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const validate = () => {
+    let tempErrors = {};
+    if (!formData.fullName.trim()) tempErrors.fullName = "Full Name is required";
+    if (!formData.email.trim()) tempErrors.email = "Email is required";
+    if (!formData.password.trim()) tempErrors.password = "Password is required";
+    if (formData.password.length < 6) tempErrors.password = "Password must be at least 6 characters";
+    if (formData.password !== formData.confirmPassword) tempErrors.confirmPassword = "Passwords do not match";
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    setLoading(true);
+    try {
+      const response = await register({
+        name: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (response.status === 200) {
+        alert("Registration successful! ✅");
+        dispatch(loginSuccess(response.data));
+        navigate("/appointments");
+      }
+    } catch (error) {
+      alert("Registration failed ❌");
+    }
+    setLoading(false);
+  };
 
   return (
     <Grid container sx={{ height: "100vh", mb: "-25px" }}>
@@ -45,13 +88,13 @@ const Signup = () => {
             left: "150px",
             cursor: "pointer",
           }}
-          onClick={() => navigate("/")} // Navigate to home when clicked
+          onClick={() => navigate("/")}
         >
           ConsultPro
         </Typography>
 
         {/* Signup Form */}
-        <Box sx={{ width: "100%", maxWidth: 400 }}>
+        <Box sx={{ width: "100%", maxWidth: 400 }} component="form" onSubmit={handleSubmit}>
           <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
             Sign Up
           </Typography>
@@ -65,7 +108,11 @@ const Signup = () => {
             label="Full Name"
             variant="outlined"
             margin="normal"
-            type="text"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            error={!!errors.fullName}
+            helperText={errors.fullName}
           />
 
           {/* Email */}
@@ -74,7 +121,11 @@ const Signup = () => {
             label="Email Address"
             variant="outlined"
             margin="normal"
-            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            error={!!errors.email}
+            helperText={errors.email}
           />
 
           {/* Password */}
@@ -83,7 +134,12 @@ const Signup = () => {
             label="Password"
             variant="outlined"
             margin="normal"
+            name="password"
             type={showPassword ? "text" : "password"}
+            value={formData.password}
+            onChange={handleChange}
+            error={!!errors.password}
+            helperText={errors.password}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -101,13 +157,16 @@ const Signup = () => {
             label="Confirm Password"
             variant="outlined"
             margin="normal"
+            name="confirmPassword"
             type={showConfirmPassword ? "text" : "password"}
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            error={!!errors.confirmPassword}
+            helperText={errors.confirmPassword}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
+                  <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                     {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
@@ -116,14 +175,8 @@ const Signup = () => {
           />
 
           {/* Signup Button */}
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            size="large"
-            sx={{ mt: 2 }}
-          >
-            Sign Up
+          <Button fullWidth variant="contained" color="primary" size="large" sx={{ mt: 2 }} type="submit" disabled={loading}>
+            {loading ? "Signing Up..." : "Sign Up"}
           </Button>
 
           {/* Already have an account? */}
