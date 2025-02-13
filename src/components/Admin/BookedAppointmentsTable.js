@@ -4,59 +4,83 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  IconButton,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 
-const bookedAppointments = [
-  { date: "Feb 12", time: "09:00 AM", fullName: "John Doe" },
-  { date: "Feb 14", time: "11:30 AM", fullName: "Jane Smith" },
-];
 
-const handleCancel = (appointment) => {
-  console.log("Canceling appointment:", appointment);
-};
+const BookedAppointmentsTable = ({ appointments, handleCancel }) => {
+ 
+  
 
-const BookedAppointmentsTable = () => {
+  
+
+  
   return (
-    <Table sx={{ minWidth: 500 }}>
-      <TableHead>
-        <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-          <TableCell sx={{ fontWeight: "bold", color: "black" }}>
-            Date
-          </TableCell>
-          <TableCell sx={{ fontWeight: "bold", color: "black" }}>
-            Time
-          </TableCell>
-          <TableCell sx={{ fontWeight: "bold", color: "black" }}>
-            Consultant
-          </TableCell>
-          <TableCell sx={{ fontWeight: "bold", color: "black" }}>
-            Actions
-          </TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {bookedAppointments.map((booking, index) => (
-          <TableRow
-            key={index}
-            sx={{ "&:nth-of-type(even)": { backgroundColor: "#f5f5f5" } }}
-          >
-            <TableCell sx={{ color: "black" }}>{booking.date}</TableCell>
-            <TableCell sx={{ color: "black" }}>{booking.time}</TableCell>
-            <TableCell sx={{ color: "black" }}>{booking.fullName}</TableCell>
-            <TableCell>
-              <IconButton
-                onClick={() => handleCancel(booking)}
-                sx={{ color: "red" }}
-              >
-                <DeleteIcon />
-              </IconButton>
+    <>
+      <Table sx={{ minWidth: 500 }}>
+        <TableHead>
+          <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
+            <TableCell sx={{ fontWeight: "bold", color: "black" }}>
+              Date
             </TableCell>
+            <TableCell sx={{ fontWeight: "bold", color: "black" }}>
+              Time
+            </TableCell>
+            <TableCell sx={{ fontWeight: "bold", color: "black" }}>
+              Consultant
+            </TableCell>
+            {/* Commented out Actions column */}
+            {/* <TableCell sx={{ fontWeight: "bold", color: "black" }}>
+              Actions
+            </TableCell> */}
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHead>
+        <TableBody>
+          {appointments.length === 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={4}
+                sx={{ textAlign: "center", color: "gray" }}
+              >
+                No Appointments Found
+              </TableCell>
+            </TableRow>
+          ) : (
+            appointments.map((booking, index) => (
+              <TableRow
+                key={index}
+                sx={{ "&:nth-of-type(even)": { backgroundColor: "#f5f5f5" } }}
+              >
+                <TableCell sx={{ color: "black" }}>
+                  {booking.appointmentDateTime
+                    ? new Date(booking.appointmentDateTime).toLocaleDateString()
+                    : "N/A"}
+                </TableCell>
+                <TableCell sx={{ color: "black" }}>
+                  {booking.appointmentDateTime
+                    ? new Date(booking.appointmentDateTime).toLocaleTimeString()
+                    : "N/A"}
+                </TableCell>
+                <TableCell sx={{ color: "black" }}>
+                  {booking.consultantName || "Unknown"}
+                </TableCell>
+                {/* Commented out Actions column and Delete icon */}
+                {/* <TableCell>
+                  <IconButton
+                    onClick={() => handleOpenDialog(booking)}
+                    sx={{ color: "red" }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell> */}
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
+
+      
+     
+    </>
   );
 };
 

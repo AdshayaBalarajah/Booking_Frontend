@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:8082/admin";
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
@@ -27,6 +27,11 @@ export const getAllAppointments = async () => {
   return response.data;
 };
 
+export const getAvailableSlots = async (date) => {
+  const response = await api.get(`/slots?date=${date}`);
+  return response.data; // Ensure backend returns list of available slots
+};
+
 export const updateBookingStatus = async (id, status) => {
   const response = await api.put(`/appointments/${id}/status`, { status });
   return response.data;
@@ -42,8 +47,13 @@ export const removeTimeSlot = async (date, timeSlot) => {
   return response.data;
 };
 
+export const cancelAppointment = async (appointmentId) => {
+  const response = await api.delete(`/appointments/${appointmentId}`);
+  return response.data;
+};
+
+
 export const testAuth = async () => {
   const response = await api.get("/test");
   return response.data;
 };
-
