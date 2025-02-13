@@ -23,7 +23,7 @@ import {
   bookAppointment,
   getUserAppointments,
   cancelAppointment,
-} from "../api/appointment"; // Import the API functions
+} from "../api/appointment"; 
 import dayjs from "dayjs";
 
 const AppointmentBooking = () => {
@@ -180,7 +180,7 @@ const AppointmentBooking = () => {
                           sx={{
                             cursor: booked ? "not-allowed" : "pointer",
                             backgroundColor: booked ? "#ffcccc" : "#ccffcc",
-                            color: "black", // Ensuring the ListItem has black text color
+                            color: "black", 
                             borderRadius: 1,
                             border: "1px solid #ccc",
                             "&:hover": booked
@@ -195,7 +195,7 @@ const AppointmentBooking = () => {
                             primary={slot}
                             sx={{
                               "& .MuiListItemText-primary": {
-                                color: "black", // Set the primary text color to black
+                                color: "black", 
                               },
                             }}
                           />

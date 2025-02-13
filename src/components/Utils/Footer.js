@@ -21,7 +21,6 @@ const Footer = () => {
     >
       <Container>
         <Grid container spacing={4} justifyContent="center">
-          {/* Company Name & Description */}
           <Grid item xs={12} sm={6} md={4}>
             <Typography variant="h5" fontWeight="bold">
               ConsultPro
@@ -32,7 +31,6 @@ const Footer = () => {
             </Typography>
           </Grid>
 
-          {/* Quick Links */}
           <Grid item xs={12} sm={6} md={4}>
             <Typography variant="h6" fontWeight="bold">
               Quick Links

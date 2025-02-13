@@ -9,7 +9,7 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import { bookAppointment } from "../../api/appointment"; // Import the bookAppointment function from your API file
+
 
 const AppointmentModal = ({
   open,
@@ -24,17 +24,10 @@ const AppointmentModal = ({
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [loading, setLoading] = useState(false); // For handling loading state
-  const [error, setError] = useState(""); // For handling error state
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(""); 
 
-  const timeSlots = [
-    "09:00 AM - 10:00 AM",
-    "10:30 AM - 11:30 AM",
-    "12:00 PM - 1:00 PM",
-    "02:00 PM - 3:00 PM",
-    "03:30 PM - 4:30 PM",
-    "05:00 PM - 6:00 PM",
-  ];
+ 
 
   useEffect(() => {
     setTimeSlot(selectedSlot);
@@ -47,7 +40,7 @@ const AppointmentModal = ({
     }
 
     setLoading(true);
-    setError(""); // Reset previous errors
+    setError(""); 
 
     const bookingRequest = {
       consultantName: consultancyType,

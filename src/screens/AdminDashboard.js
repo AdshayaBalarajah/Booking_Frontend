@@ -12,16 +12,13 @@ const AdminDashboard = () => {
   const [bookedAppointments, setBookedAppointments] = useState([]);
   const today = new Date().toISOString().split("T")[0];
 
-  // Function to handle canceling an appointment
   const handleCancel = async (appointmentId) => {
     try {
       console.log("Canceling appointment:", appointmentId);
 
-      // Call API to cancel the appointment on the server side
-      const response = await cancelAppointment(appointmentId); // Calling the API to delete the appointment
+      const response = await cancelAppointment(appointmentId);
 
       if (response.success) {
-        // Remove the canceled appointment from the local state (admin's dashboard)
         setBookedAppointments((prevAppointments) =>
           prevAppointments.filter((app) => app.id !== appointmentId)
         );
@@ -104,7 +101,7 @@ const AdminDashboard = () => {
               </Typography>
               <BookedAppointmentsTable
                 appointments={bookedAppointments}
-                handleCancel={handleCancel} // Pass handleCancel as prop
+                handleCancel={handleCancel}
               />
             </CardContent>
           </Card>

@@ -3,7 +3,6 @@ import { Grid, Box, Typography, TextField, Button, Link, InputAdornment, IconBut
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import SignupImg from "../assets/login.jpg"; 
 import { useNavigate } from "react-router-dom";
-// import axios from "axios"; 
 import { register } from "../api/auth";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../store/authSlice";
@@ -63,7 +62,6 @@ const Signup = () => {
 
   return (
     <Grid container sx={{ height: "100vh", mb: "-25px" }}>
-      {/* Left Section - Signup Form */}
       <Grid
         item
         xs={12}
@@ -189,7 +187,6 @@ const Signup = () => {
         </Box>
       </Grid>
 
-      {/* Right Section - Full Height Image */}
       <Grid
         item
         xs={12}

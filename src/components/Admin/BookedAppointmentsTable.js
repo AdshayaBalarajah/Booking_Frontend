@@ -8,12 +8,6 @@ import {
 
 
 const BookedAppointmentsTable = ({ appointments, handleCancel }) => {
- 
-  
-
-  
-
-  
   return (
     <>
       <Table sx={{ minWidth: 500 }}>
@@ -63,7 +57,7 @@ const BookedAppointmentsTable = ({ appointments, handleCancel }) => {
                 <TableCell sx={{ color: "black" }}>
                   {booking.consultantName || "Unknown"}
                 </TableCell>
-                {/* Commented out Actions column and Delete icon */}
+               
                 {/* <TableCell>
                   <IconButton
                     onClick={() => handleOpenDialog(booking)}
@@ -77,9 +71,6 @@ const BookedAppointmentsTable = ({ appointments, handleCancel }) => {
           )}
         </TableBody>
       </Table>
-
-      
-     
     </>
   );
 };

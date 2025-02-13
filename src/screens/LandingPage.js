@@ -16,7 +16,7 @@ const LandingPage = () => {
 
   // Function to handle button click
   const handleBookAppointment = () => {
-    navigate("/appointments"); // Navigate to AppointmentPage
+    navigate("/appointments"); 
   };
 
   return (

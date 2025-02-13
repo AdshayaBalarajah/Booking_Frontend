@@ -6,7 +6,6 @@ import {
   Typography,
   Card,
   CardContent,
-  CardMedia,
   Avatar,
   Rating,
 } from "@mui/material";

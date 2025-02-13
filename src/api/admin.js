@@ -29,7 +29,7 @@ export const getAllAppointments = async () => {
 
 export const getAvailableSlots = async (date) => {
   const response = await api.get(`/slots?date=${date}`);
-  return response.data; // Ensure backend returns list of available slots
+  return response.data; 
 };
 
 export const updateBookingStatus = async (id, status) => {

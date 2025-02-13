@@ -11,21 +11,18 @@ import {
   IconButton,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { logout } from "../../store/authSlice"; // Adjust path as needed
+import { logout } from "../../store/authSlice";
 
 const Navbar = () => {
   const theme = useTheme();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
 
-  // State for Avatar Menu
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  // Handle Avatar Menu
   const handleAvatarClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -34,7 +31,6 @@ const Navbar = () => {
     setAnchorEl(null);
   };
 
-  // Handle Logout
   const handleLogout = () => {
     dispatch(logout());
     handleClose();
@@ -67,7 +63,6 @@ const Navbar = () => {
           ConsultPro
         </Typography>
 
-        {/* Navigation Tabs & Login Button (All Aligned to the Right) */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 3, ml: "auto" }}>
           {[
             { label: "Home", path: "/" },
@@ -90,8 +85,7 @@ const Navbar = () => {
               {item.label}
             </Button>
           ))}
-
-          {/* Conditionally Render Login Button or Avatar */}
+          
           {!userId ? (
             <Button
               variant="outlined"

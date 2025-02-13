@@ -48,7 +48,6 @@ const AdminLoginPage = () => {
       if (response.status === 200) {
         const userData = response.data;
 
-        // Check if the logged-in user is an admin, considering case sensitivity
         if (userData.userRole.toUpperCase() === "ADMIN") {
           dispatch(loginSuccess(userData));
           alert("Login successful! ✅");

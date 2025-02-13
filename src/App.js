@@ -5,7 +5,7 @@ import AppointmentBooking from "./screens/AppointmentPage";
 import AdminDashboard from "./screens/AdminDashboard";
 import Login from "./screens/LoginPage";
 import Signup from "./screens/SignUpPage";
-import AdminLoginPage from "./screens/AdminLoginPage"; // Import the AdminLoginPage
+import AdminLoginPage from "./screens/AdminLoginPage"; 
 
 
 const App = () => {

@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   accessToken: localStorage.getItem("accessToken") || null,
   refreshToken: localStorage.getItem("refreshToken") || null,
-  userId: localStorage.getItem("userId") || null, // Consistent casing
-  userRole: null, // Store userRole only in Redux state
+  userId: localStorage.getItem("userId") || null,
+  userRole: null, 
 };
 
 const authSlice = createSlice({
@@ -14,13 +14,12 @@ const authSlice = createSlice({
     loginSuccess: (state, action) => {
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
-      state.userId = action.payload.userid; // Consistent casing
+      state.userId = action.payload.userid; 
       state.userRole = action.payload.userRole;
 
-      // Store tokens and userId consistently in localStorage
       localStorage.setItem("accessToken", action.payload.accessToken);
       localStorage.setItem("refreshToken", action.payload.refreshToken);
-      localStorage.setItem("userId", action.payload.userId); // Consistent casing
+      localStorage.setItem("userId", action.payload.userId);
     },
     logout: (state) => {
       state.accessToken = null;
@@ -28,7 +27,6 @@ const authSlice = createSlice({
       state.userId = null;
       state.userRole = null;
 
-      // Clear localStorage
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("userId");
