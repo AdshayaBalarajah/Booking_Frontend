@@ -1,8 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, MenuItem, Typography } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 import { bookAppointment } from "../../api/appointment"; // Import the bookAppointment function from your API file
 
-const AppointmentModal = ({ open, handleClose, selectedDate, selectedSlot, onConfirm }) => {
+const AppointmentModal = ({
+  open,
+  handleClose,
+  selectedDate,
+  selectedSlot,
+  onConfirm,
+}) => {
   const [consultancyType, setConsultancyType] = useState("");
   const [timeSlot, setTimeSlot] = useState(selectedSlot);
   const [mode, setMode] = useState("");
@@ -41,16 +56,26 @@ const AppointmentModal = ({ open, handleClose, selectedDate, selectedSlot, onCon
       mode,
       fullName,
       email,
-      userNotes:phone,
+      userNotes: phone,
     };
     onConfirm(bookingRequest);
-
+    setConsultancyType("");
+    setFullName("");
+    setEmail("");
+    setMode("");
+    setPhone("");
     setLoading(false);
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} PaperProps={{ sx: { backgroundColor: "white", color: "black" } }}>
-      <DialogTitle sx={{ color: "black", fontWeight: "bold" }}>Book Appointment</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      PaperProps={{ sx: { backgroundColor: "white", color: "black" } }}
+    >
+      <DialogTitle sx={{ color: "black", fontWeight: "bold" }}>
+        Book Appointment
+      </DialogTitle>
       <DialogContent>
         <Typography variant="subtitle1" sx={{ color: "black" }}>
           Selected Date: {selectedDate.format("YYYY-MM-DD")}
@@ -83,8 +108,7 @@ const AppointmentModal = ({ open, handleClose, selectedDate, selectedSlot, onCon
           value={timeSlot || ""}
           InputProps={{ sx: { color: "black" } }}
           sx={{ color: "black" }}
-        >
-        </TextField>
+        ></TextField>
 
         {/* Mode of Consultancy */}
         <TextField
@@ -143,7 +167,12 @@ const AppointmentModal = ({ open, handleClose, selectedDate, selectedSlot, onCon
         <Button onClick={handleClose} color="secondary">
           Cancel
         </Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary" disabled={loading}>
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          color="primary"
+          disabled={loading}
+        >
           {loading ? "Booking..." : "Confirm"}
         </Button>
       </DialogActions>

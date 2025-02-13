@@ -49,9 +49,10 @@ const Login = () => {
 
       if (response.status === 200) {
         const userData = response.data;
+        console.log(userData);
 
         // Check if the user is an admin based on the role
-        if (userData.role === "ADMIN") {
+        if (userData.userRole === "ADMIN") {
           alert("Admin access denied! ❌");
         } else {
           dispatch(loginSuccess(userData));

@@ -45,12 +45,11 @@ const AdminLoginPage = () => {
         email: formData.email,
         password: formData.password,
       });
-
       if (response.status === 200) {
         const userData = response.data;
 
         // Check if the logged-in user is an admin, considering case sensitivity
-        if (userData.role.toUpperCase() === "ADMIN") {
+        if (userData.userRole.toUpperCase() === "ADMIN") {
           dispatch(loginSuccess(userData));
           alert("Login successful! ✅");
           navigate("/admin");
